@@ -7,24 +7,47 @@ import java.util.List;
 
 public class GameStorage {
     private List<Game> gamesList;
-    Game game = new Game();
 
     public GameStorage() {
         this.gamesList = new ArrayList<>();
     }
 
-    public void agregar(Game elemento) {
-        this.gamesList.add(elemento);
+    public void addGame(Game game) {
+        this.gamesList.add(game);
     }
 
-    public void mostrarTitulos() {
-        for (Game game1 : gamesList) {
-            System.out.println(game1.getTitle());
+    public void showTitles() {
+        for (Game game : gamesList) {
+            System.out.println(game.getTitle());
         }
     }
 
-    public void eliminar(Game elemento) {
-        this.gamesList.remove(elemento);
+    public void showGames() {
+        for (Game game : gamesList) {
+            game.showInfo();
+            System.out.println("--------------------");
+        }
+    }
+
+    public void deleteGame(String title) {
+        for (Game game : gamesList) {
+            if (game.getTitle().equalsIgnoreCase(title)) {
+                gamesList.remove(game);
+                System.out.println("Game deleted successfully.");
+                return;
+            }
+        }
+        System.out.println("Game not found.");
+    }
+
+    public void searchById(int id) {
+        for (Game game : gamesList) {
+            if (game.getId() == id) {
+                game.showInfo();
+                return;
+            }
+        }
+        System.out.println("Game not found.");
     }
 
     public List<Game> getGamesList() {
