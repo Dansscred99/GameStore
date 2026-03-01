@@ -1,4 +1,7 @@
 import classes.Game;
+import classes.Genre;
+import classes.Platform;
+import classes.Status;
 import lists.GameStorage;
 import util.ScannerUtil;
 
@@ -25,13 +28,15 @@ public class Main {
                         System.out.println("opcion 1");
                         //asignacion datos a la clase Game
                         String title = ScannerUtil.captureText("ingrese el titulo");
-                        String genre = ScannerUtil.captureText("ingrese el genero");
-                        String status = ScannerUtil.captureText("ingrese el estatus");
+                        Genre genre = Genre.valueOf(ScannerUtil.captureText("ingrese el genero"));
+                        Status status = Status.valueOf(ScannerUtil.captureText("ingrese el estatus"));
+                        Platform platform = Platform.valueOf(ScannerUtil.captureText("ingrese el platform"));
+                        String developer = ScannerUtil.captureText("ingrese el developer");
                         int releseYear = ScannerUtil.captureNumber("ingrese año de lanzamiento");
                         double rating = ScannerUtil.captureDecimal("califique el juego");
                         double hoursPlayed = ScannerUtil.captureDecimal("ingrese la cantidad de horas jugadas");
                         // guardando los datos en el objeto
-                        Game gm = new Game(title, genre, status, releseYear, rating, hoursPlayed);
+                        Game gm = new Game(title, genre ,platform,developer,status, releseYear, rating, hoursPlayed);
 
                         //si son validos se guardan en la lista
                         if(gm.isValid()){
@@ -96,11 +101,11 @@ public class Main {
 
     }
     public static void cargarGame(GameStorage game){
-        game.addGame(new Game("The Witcher 3", "RPG", "COMPLETED", 2015, 120.5, 4.9));
-        game.addGame(new Game("FIFA 24", "Sports", "Playing", 2023, 35.0, 4.2));
-        game.addGame(new Game("Minecraft", "Sandbox", "Completed", 2011, 250.0, 5.0));
-        game.addGame(new Game("Cyberpunk 2077", "RPG", "Playing", 2020, 60.0, 4.0));
-        game.addGame(new Game("Resident Evil 4", "Horror", "Completed", 2005, 40.0, 4.8));
+        game.addGame(new Game("The Witcher 3", Genre.RPG, Status.COMPLETED, 2015, 120.5, 4.9));
+        game.addGame(new Game("FIFA 24", Genre.RPG, Status.COMPLETED,2023, 35.0, 4.2));
+        game.addGame(new Game("Minecraft", Genre.RPG, Status.COMPLETED, 2011, 250.0, 5.0));
+        game.addGame(new Game("Cyberpunk 2077", Genre.RPG, Status.COMPLETED, 2020, 60.0, 4.0));
+        game.addGame(new Game("Resident Evil 4", Genre.RPG, Status.COMPLETED, 2005, 40.0, 4.8));
 
     }
 }

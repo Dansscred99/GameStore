@@ -5,24 +5,17 @@ public class Game {
     private boolean validation;
     private int id;
     private String title;
-    private String genre;
-    private String status;
+    private Genre genre;
+    private Platform platform;
+    private String Developer;
+    private Status status;
     private int realeseYear;
     private double rating;
     private double hoursPlayed;
 
-    public Game(String title, String genre, String status, int realeseYear, double hoursPlayed, double rating){
+    public Game(String title, Genre genre,Platform platform,String developer, Status status, int realeseYear, double hoursPlayed, double rating){
         this.id = contId++;
         //validacion de datos
-        if(title == null || title.trim().isEmpty()
-                || genre == null || genre.trim().isEmpty()
-                || status == null || status.trim().isEmpty()
-                || realeseYear < 1970 || realeseYear > 2026
-                || rating < 0 || rating > 5){
-            validation = false;
-            //si los datos no son correctos detiene el codigo y no ingresan al objeto
-            return;
-        }
         this.title = title;
         this.genre = genre;
         this.status = status;
@@ -59,11 +52,11 @@ public class Game {
         return title;
     }
 
-    public String getGenre() {
+    public Genre getGenre() {
         return genre;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
