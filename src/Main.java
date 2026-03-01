@@ -42,8 +42,6 @@ public class Main {
                         }
                         option = ScannerUtil.menuAdd();
                     }
-
-
                     break;
                 case 2:
                     option=1;
