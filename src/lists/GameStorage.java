@@ -2,15 +2,42 @@ package lists;
 
 import classes.Game;
 import classes.Genre;
+import classes.Platform;
+import classes.Platform;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameStorage {
     private List<Game> gamesList;
+    private List<PlaySession> sessions;
 
     public GameStorage() {
         this.gamesList = new ArrayList<>();
+        this.sessions = new ArrayList<>();
+    }
+
+    public void logPlaySession(int gameId, double hours) {
+    Game game = this.gamesList.stream().filter(g -> g.getId() == gameId).
+            findFirst().
+            orElse(null);
+        if (game == null) {
+            System.out.println("Game with id " + gameId + " not found");
+            return;
+        }
+        PlaySession session1 = new PlaySession(
+                gameId,
+                hours,
+                LocalDateTime.now()
+        );
+        sessions.add(session1);
+        game.setHoursPlayed(game.getHoursPlayed() + hours);
+        System.out.println();
+        System.out.println("Session logged"+"\nGame Id : " +game.getId()
+                        +"\nTitle: "+game.getTitle()
+                        +" \nHours played: "+game.getHoursPlayed());
+
     }
 
     public void addGame(Game game) {
@@ -42,6 +69,7 @@ public class GameStorage {
                  );
 
     }
+    //opcion 7
     //metodo que permite buscar por titulo o developer
     public void searchOptions( String text) {
             gamesList.stream()
@@ -55,9 +83,9 @@ public class GameStorage {
                 .filter(game -> game.getGenre() != null && game.getGenre().contains(genre))
                 .forEach(System.out::println);
     }
-    public void filterOptionPlatfom(Genre genre) {
+    public void filterOptionPlatfom(Platform platform) {
         gamesList.stream()
-                .filter(game -> game.getGenre() != null && game.getGenre().contains(genre))
+                .filter(game -> game.getPlatform() != null && game.getGenre().contains(platform))
                 .forEach(System.out::println);
     }
     public void filterOptionStatus(Genre genre) {
@@ -83,7 +111,16 @@ public class GameStorage {
                     .forEach(System.out::println);
     }
 
+    public String showTitle(int id){
+       return  gamesList.stream().filter(game-> game.getId() == id).
+                map(Game::getTitle).findFirst().orElse("game not found");
+
+    }
+
     public List<Game> getGamesList() {
         return gamesList;
+    }
+    public List<PlaySession> getSession() {
+        return sessions;
     }
 }

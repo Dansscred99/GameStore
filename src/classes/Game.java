@@ -88,6 +88,11 @@ public class Game {
         return hoursPlayed;
     }
 
+    public double setHoursPlayed(double hoursPlayed) {
+        this.hoursPlayed = hoursPlayed;
+        return hoursPlayed;
+    }
+
     public String getDeveloper() {
         return developer;
     }
