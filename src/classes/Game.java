@@ -1,25 +1,30 @@
 package classes;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class Game {
     private static int contId = 1;
     private boolean validation;
     private int id;
     private String title;
-    private Genre genre;
-    private Platform platform;
-    private String Developer;
+    private Set<Genre> genre;
+    private Set<Platform> platform;
+    private String developer;
     private Status status;
-    private int realeseYear;
+    private int releaseYear;
     private double rating;
     private double hoursPlayed;
 
-    public Game(String title, Genre genre,Platform platform,String developer, Status status, int realeseYear, double hoursPlayed, double rating){
+    public Game(String title, Set<Genre> genre, Set<Platform> platform,String developer, Status status, int releaseYear, double hoursPlayed, double rating){
         this.id = contId++;
         //validacion de datos
         this.title = title;
         this.genre = genre;
+        this.platform = platform;
+        this.developer = developer;
         this.status = status;
-        this.realeseYear = realeseYear;
+        this.releaseYear = releaseYear;
         this.hoursPlayed = hoursPlayed;
         this.rating = rating;
         validation = true;
@@ -33,13 +38,24 @@ public class Game {
     public boolean isValid() {
         return validation;
     }
+        @Override
+        public String toString() {
+        return "ID: "+id+
+                " | Title: " + title +
+                " | Developer: " + developer +
+                " | Genre: " + genre +
+                " | Platform: " + platform +
+                " | Year: " + releaseYear +
+                " | Rating: " + rating +
+                " | Hours Played: " + hoursPlayed;
+        }
 
     public void showInfo(){
         System.out.println("ID: " + id);
         System.out.println("Title: " + title);
         System.out.println("Genre: " + genre);
         System.out.println("Status: " + status);
-        System.out.println("RealeseYear: " + realeseYear);
+        System.out.println("RealeseYear: " + releaseYear);
         System.out.println("Rating: " + rating);
         System.out.println("Hours Played: " + hoursPlayed);
     }
@@ -52,7 +68,7 @@ public class Game {
         return title;
     }
 
-    public Genre getGenre() {
+    public Set<Genre> getGenre() {
         return genre;
     }
 
@@ -60,8 +76,8 @@ public class Game {
         return status;
     }
 
-    public int getRealeseYear() {
-        return realeseYear;
+    public int getReleaseYear() {
+        return releaseYear;
     }
 
     public double getRating() {
@@ -70,5 +86,13 @@ public class Game {
 
     public double getHoursPlayed() {
         return hoursPlayed;
+    }
+
+    public String getDeveloper() {
+        return developer;
+    }
+
+    public Set<Platform> getPlatform() {
+        return platform;
     }
 }

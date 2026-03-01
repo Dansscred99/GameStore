@@ -22,8 +22,82 @@ public class ScannerUtil {
         System.out.println("║ 9. Save and Exit                     ║");
         System.out.println("╚══════════════════════════════════════╝");
         System.out.print("Select an option: ");
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
 
-        return Integer.parseInt(SCANNER.nextLine());
+        return 0;
+    }
+
+    public static int ser_fil_sor_Menu(){
+        System.out.println("\n╔══════════════════════════════════════╗");
+        System.out.println("║     SELECT AN OPTION                 ║");
+        System.out.println("╠══════════════════════════════════════╣");
+        System.out.println("║ 1. Search                            ║");
+        System.out.println("║ 2. Filter                            ║");
+        System.out.println("║ 3. Sort by                           ║");
+        System.out.println("║ 4. Exit                              ║");
+        System.out.println("╚══════════════════════════════════════╝");
+        System.out.println("Type your answer to search: ");
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+        return 0;
+    }
+
+
+    public static int sortMenu(){
+        System.out.println("\n╔══════════════════════════════════════╗");
+        System.out.println("║     SELECT A SORT OPTION             ║");
+        System.out.println("╠══════════════════════════════════════╣");
+        System.out.println("║ 1. Sort by Release Year              ║");
+        System.out.println("║ 2. Sort by Title                     ║");
+        System.out.println("║ 3. Sort by Rating                    ║");
+        System.out.println("║ 4. Exit                              ║");
+        System.out.println("╚══════════════════════════════════════╝");
+        System.out.println("Type your answer to search: ");
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+        return 0;
+    }
+    public static int filterMenu(){
+        System.out.println("\n╔══════════════════════════════════════╗");
+        System.out.println("║     SELECT A FILTER OPTION           ║");
+        System.out.println("╠══════════════════════════════════════╣");
+        System.out.println("║ 1. Filter by Genre                   ║");
+        System.out.println("║ 2. Filter by Platform                ║");
+        System.out.println("║ 3. Filter by Status                  ║");
+        System.out.println("║ 4. Exit                              ║");
+        System.out.println("╚══════════════════════════════════════╝");
+        System.out.println("Type your answer to search: ");
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+        return 0;
+    }
+    public static int searchMenu() {
+        System.out.println("\n╔══════════════════════════════════════╗");
+        System.out.println("║     1 - Search again                 ║");
+        System.out.println("║     2 - Return to menu               ║");
+        System.out.println("╚══════════════════════════════════════╝");
+        System.out.print("Enter the option number: ");
+
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+
+        return 0;
     }
 
     public static int menuList() {
@@ -33,7 +107,13 @@ public class ScannerUtil {
         System.out.println("╚══════════════════════════════════════╝");
         System.out.print("Enter the option number: ");
 
-        return Integer.parseInt(SCANNER.nextLine());
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+
+        return 0;
     }
 
     public static int menuById() {
@@ -43,7 +123,13 @@ public class ScannerUtil {
         System.out.println("╚══════════════════════════════════════╝");
         System.out.print("Enter the option number: ");
 
-        return Integer.parseInt(SCANNER.nextLine());
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+
+        return 0;
     }
 
     public static int menuDelete() {
@@ -53,7 +139,13 @@ public class ScannerUtil {
         System.out.println("╚══════════════════════════════════════╝");
         System.out.print("Enter the option number: ");
 
-        return Integer.parseInt(SCANNER.nextLine());
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+
+        return 0;
     }
 
     public static int menuAdd() {
@@ -63,7 +155,13 @@ public class ScannerUtil {
         System.out.println("╚══════════════════════════════════════╝");
         System.out.print("Enter the option number: ");
 
-        return Integer.parseInt(SCANNER.nextLine());
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+
+        return 0;
     }
 
     public static String captureText(String message) {
@@ -73,11 +171,23 @@ public class ScannerUtil {
 
     public static int captureNumber(String message) {
         System.out.print(message + ": ");
-        return Integer.parseInt(SCANNER.nextLine());
+        try {
+            return Integer.parseInt(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+        return 0;
     }
 
     public static double captureDecimal(String message) {
         System.out.print(message + ": ");
-        return Double.parseDouble(SCANNER.nextLine());
+        try {
+            return Double.parseDouble(SCANNER.nextLine());
+        }catch(NumberFormatException e){
+            System.out.println("invalid input");
+        }
+
+        return 0;
+
     }
 }
