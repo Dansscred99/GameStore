@@ -16,38 +16,30 @@ public class GameStorage {
         this.gamesList.add(game);
     }
 
-    public void showTitles() {
-        for (Game game : gamesList) {
-            System.out.println(game.getTitle());
-        }
-    }
 
     public void showGames() {
-        for (Game game : gamesList) {
+        gamesList.forEach(game -> {
             game.showInfo();
             System.out.println("--------------------");
-        }
+        });
     }
 
     public void deleteGame(String title) {
-        for (Game game : gamesList) {
-            if (game.getTitle().equalsIgnoreCase(title)) {
-                gamesList.remove(game);
-                System.out.println("Game deleted successfully.");
-                return;
-            }
+        boolean removed = gamesList.removeIf(game -> game.getTitle().equalsIgnoreCase(title));
+        if(removed){
+            System.out.println("Game has been deleted.");
+        }else {
+            System.out.println("Game not found.");
         }
-        System.out.println("Game not found.");
     }
 
     public void searchById(int id) {
-        for (Game game : gamesList) {
-            if (game.getId() == id) {
-                game.showInfo();
-                return;
-            }
-        }
-        System.out.println("Game not found.");
+         gamesList.stream()
+                .filter(game -> game.getId() == id).findFirst().ifPresentOrElse(
+                         Game::showInfo,
+                        () -> System.out.println("Game not found.")
+                 );
+
     }
 
     public List<Game> getGamesList() {
