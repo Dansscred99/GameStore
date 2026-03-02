@@ -31,22 +31,36 @@ public class Main {
                         System.out.println("opcion 1");
                         //asignacion datos a la clase Game
                         String title = ScannerUtil.captureText("ingrese el titulo");
-                        Genre genre = Genre.valueOf(ScannerUtil.captureText("ingrese el genero"));
-                        Status status = Status.valueOf(ScannerUtil.captureText("ingrese el estatus"));
-                        Platform platform = Platform.valueOf(ScannerUtil.captureText("ingrese el platform"));
-                        String developer = ScannerUtil.captureText("ingrese el developer");
-                        int releaseYear = ScannerUtil.captureNumber("ingrese año de lanzamiento");
-                        double rating = ScannerUtil.captureDecimal("califique el juego");
-                        double hoursPlayed = ScannerUtil.captureDecimal("ingrese la cantidad de horas jugadas");
-                        // guardando los datos en el objeto
-                        Game gm = new Game(title, Set.of(genre), Set.of(platform), developer, status, releaseYear, rating, hoursPlayed);
 
-                        //si son validos se guardan en la lista
+                        Genre genre = ScannerUtil.captureEnum("Ingrese el genero:", Genre.class);
+
+                        Status status = ScannerUtil.captureEnum("Ingrese el estatus:", Status.class);
+
+                        Platform platform = ScannerUtil.captureEnum("Ingrese la plataforma:", Platform.class);
+
+                        String developer = ScannerUtil.captureText("ingrese el developer");
+
+                        int releaseYear = ScannerUtil.captureNumber("ingrese año de lanzamiento");
+
+                        double rating = ScannerUtil.captureDecimal("califique el juego");
+
+                        double hoursPlayed = ScannerUtil.captureDecimal("ingrese la cantidad de horas jugadas");
+
+                        Game gm = new Game(
+                                title,
+                                Set.of(genre),
+                                Set.of(platform),
+                                developer,
+                                status,
+                                releaseYear,
+                                hoursPlayed,
+                                rating
+                        );
                         if (gm.isValid()) {
                             gmst.addGame(gm);
-                            System.out.println("juego agregado");
+                            System.out.println("Juego agregado");
                         } else {
-                            System.out.println("datos  no validos, no se guardo el juego");
+                            System.out.println("Datos no validos, no se guardo el juego");
                         }
                         option = ScannerUtil.menuAdd();
                     }
@@ -55,7 +69,7 @@ public class Main {
                     option = 1;
                     while (option != 2 && option != 0) {
                         System.out.println("opcion 2 mostrar lista");
-                        System.out.println(gmst.toString());
+                        gmst.showGames();
                         option = ScannerUtil.menuList();
                     }
 
@@ -70,6 +84,8 @@ public class Main {
                     break;
                 case 4:
                     System.out.println("opcion 4 editar videojuego");
+                    int id = ScannerUtil.captureNumber("Enter game ID to edit");
+                    gmst.editGame(id);
                     break;
                 case 5:
                     System.out.println("opcion 5 eliminar videojuego");
@@ -81,85 +97,116 @@ public class Main {
                     }
                     break;
                 case 6:
-                    System.out.println("opcion 6, serch, filter sort");
                     int ans;
-                    do {
+
+                    while (true) {
+
                         ans = ScannerUtil.ser_fil_sor_Menu();
+
                         switch (ans) {
-                            case 1:
-                                do {
-                                    String text = ScannerUtil.captureText("ingrese el titulo del juego o el developer");
+
+                            case 1: // SEARCH
+                                while (true) {
+
+                                    String text = ScannerUtil.captureText("Ingrese el titulo del juego o el developer");
                                     gmst.searchOptions(text);
-                                    ans = ScannerUtil.searchMenu();
-                                } while (ans == 1);
 
-                                break;
-                            case 2:
-                                do {
-                                    ans = ScannerUtil.filterMenu();
-                                    if (ans == 1) {
-                                        try {
-                                            String genre = ScannerUtil.captureText("ingrese el genero");
-                                            gmst.filterOptionGenre(Genre.valueOf(genre));
-                                        } catch (IllegalArgumentException e) {
-                                            System.out.println("Genero no valido");
+                                    int searchOption = ScannerUtil.searchMenu();
 
-                                        }
-
-                                    } else if (ans == 2) {
-                                        try {
-                                            String platform = ScannerUtil.captureText("ingrese la plataforma");
-                                            gmst.filterOptionPlatfom(Platform.valueOf(platform));
-                                        } catch (IllegalArgumentException e) {
-                                            System.out.println("Plataforma no valida");
-
-                                        }
-
-                                    } else if (ans == 3) {
-                                        try {
-                                            String status = ScannerUtil.captureText("ingrese el status");
-                                            gmst.filterOptionStatus(Genre.valueOf(status));
-                                        } catch (IllegalArgumentException e) {
-                                            System.out.println("Status no valido");
-                                        }
-
-                                    } else {
-
-                                        System.out.println("Opcion no valida");
-                                        ans = 0;
+                                    if (searchOption == 2) {
+                                        break; // volver al menu anterior
                                     }
 
-                                } while (ans < 4);
+                                }
                                 break;
-                            case 3:
-                                do {
-                                    ans = ScannerUtil.sortMenu();
-                                    if (ans == 1) {
-                                        gmst.sortOptionReleaseYear();
-                                    } else if (ans == 2) {
-                                        gmst.sortOptionTitle();
-                                    } else if (ans == 3) {
-                                        gmst.sortOptionRating();
-                                    } else {
-                                        System.out.println("Opcion no valida");
-                                        ans = 0;
-                                    }
-                                } while (ans < 4);
 
+                            case 2: // FILTER
+                                while (true) {
+
+                                    int filterOption = ScannerUtil.filterMenu();
+
+                                    if (filterOption == 4) {
+                                        break; // salir del filtro
+                                    }
+
+                                    switch (filterOption) {
+
+                                        case 1:
+                                            try {
+                                                Genre genre = ScannerUtil.captureEnum("Ingrese el genero",Genre.class);
+                                                gmst.filterOptionGenre(genre);
+                                            } catch (IllegalArgumentException e) {
+                                                System.out.println("Genero no valido");
+                                            }
+                                            break;
+
+                                        case 2:
+                                            try {
+                                                Platform platform = ScannerUtil.captureEnum("Ingrese la plataforma", Platform.class);
+                                                gmst.filterOptionPlatfom(platform);
+                                            } catch (IllegalArgumentException e) {
+                                                System.out.println("Plataforma no valida");
+                                            }
+                                            break;
+
+                                        case 3:
+                                            try {
+                                                Status status = ScannerUtil.captureEnum("Ingrese el status", Status.class);
+                                                gmst.filterOptionStatus(status);
+                                            } catch (IllegalArgumentException e) {
+                                                System.out.println("Status no valido");
+                                            }
+                                            break;
+
+                                        default:
+                                            System.out.println("Opcion no valida");
+                                    }
+                                }
+                                break;
+                            case 3: // SORT
+                                while (true) {
+
+                                    int sortOption = ScannerUtil.sortMenu();
+
+                                    if (sortOption == 4) {
+                                        break; // salir del sort
+                                    }
+
+                                    switch (sortOption) {
+
+                                        case 1:
+                                            gmst.sortOptionReleaseYear();
+                                            break;
+
+                                        case 2:
+                                            gmst.sortOptionTitle();
+                                            break;
+
+                                        case 3:
+                                            gmst.sortOptionRating();
+                                            break;
+
+                                        default:
+                                            System.out.println("Opcion no valida");
+                                    }
+                                }
+                                break;
+                            case 4: // EXIT
                                 break;
                             default:
                                 System.out.println("Opcion no valida");
-                                ans = 0;
-                                break;
                         }
-                    } while (ans < 4);
+                        if (ans == 4) {
+                            break;
+                        }
+                    }
                     break;
                 case 7:
                     System.out.println("opcion 7 log play sessions");
                     do {
                         ans=1;
                         try {
-                            int id= ScannerUtil.captureNumber("ingrese el Id del Juego");
+                             id= ScannerUtil.captureNumber("ingrese el Id del Juego");
                             System.out.println("Game Title: "+gmst.showTitle(id));
                             double hours = ScannerUtil.captureDecimal("ingrese la cantidad de horas del Juego");
                                 if (hours < 0) {
@@ -175,6 +222,8 @@ public class Main {
                     break;
                 case 8:
                     System.out.println("opcion 8 view stadistics");
+                    gmst.showStatistics();
+
 
                     break;
                 case 9:

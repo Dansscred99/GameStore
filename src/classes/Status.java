@@ -7,4 +7,6 @@ public enum Status {
     COMPLETED,      // Terminado
     ON_HOLD,        // Pausado
     DROPPED         // Dejaste de jugarlo
+    ;
+
 }

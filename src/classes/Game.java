@@ -18,7 +18,15 @@ public class Game {
 
     public Game(String title, Set<Genre> genre, Set<Platform> platform,String developer, Status status, int releaseYear, double hoursPlayed, double rating){
         this.id = contId++;
-        //validacion de datos
+
+        if (title == null || title.isBlank()) return;
+        if (developer == null || developer.isBlank()) return;
+        if (genre == null || genre.isEmpty()) return;
+        if (platform == null || platform.isEmpty()) return;
+        if (releaseYear < 1970 || releaseYear > 2026) return;
+        if (rating < 0 || rating > 5) return;
+        if (hoursPlayed < 0) return;
+
         this.title = title;
         this.genre = genre;
         this.platform = platform;
@@ -27,6 +35,7 @@ public class Game {
         this.releaseYear = releaseYear;
         this.hoursPlayed = hoursPlayed;
         this.rating = rating;
+
         validation = true;
 
     }
@@ -93,11 +102,39 @@ public class Game {
         return hoursPlayed;
     }
 
+
     public String getDeveloper() {
         return developer;
     }
 
     public Set<Platform> getPlatform() {
         return platform;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setGenre(Set<Genre> genre) {
+        this.genre = genre;
+    }
+
+    public void setPlatform(Set<Platform> platform) {
+        this.platform = platform;
+    }
+
+    public void setDeveloper(String developer) {
+        this.developer = developer;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 }
