@@ -5,6 +5,7 @@ import repository.InMemorySessionRepository;
 import repository.SessionRepository;
 import service.GameService;
 import service.SessionService;
+import service.StatsService;
 import util.ScannerUtil;
 
 import java.util.Set;
@@ -20,6 +21,7 @@ public class Main {
 
         GameService gameService = new GameService(gameRepository);
         SessionService sessionService = new SessionService(sessionRepository, gameRepository);
+        StatsService statsService = new StatsService(gameRepository);
 
         cargarGame(gameService);
         //siclo controlado por el usuario.
@@ -254,7 +256,7 @@ public class Main {
                     break;
                 case 8:
                     System.out.println("opcion 8 view stadistics");
-                    gameService.showStatistics();
+                    statsService.showStatistics();
 
 
                     break;
