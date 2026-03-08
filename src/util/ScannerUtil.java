@@ -190,4 +190,26 @@ public class ScannerUtil {
         return 0;
 
     }
+    public static <T extends Enum<T>> T captureEnum(String message, Class<T> enumType) {
+
+        while (true) {
+            try {
+
+                System.out.println(message);
+
+                for (T value : enumType.getEnumConstants()) {
+                    System.out.println("- " + value);
+                }
+
+                String input = captureText("R// ");
+
+                return Enum.valueOf(enumType, input.toUpperCase());
+
+            } catch (IllegalArgumentException e) {
+
+                System.out.println("Valor invalido. Intente nuevamente.\n");
+
+            }
+        }
+    }
 }
