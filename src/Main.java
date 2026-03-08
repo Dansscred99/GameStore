@@ -1,4 +1,4 @@
-import classes.*;
+import model.*;
 import lists.GameStorage;
 import util.ScannerUtil;
 
@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         //variable para el switch y la inizializacion de los objetos
         int option = 0;
-
+        GameBase game = null;
         GameStorage gmst = new GameStorage();
         cargarGame(gmst);
 
@@ -21,9 +21,16 @@ public class Main {
 
                 case 1:
                     //se puede añadir juegos hasta que el usuario salga al menu
-                    while (option != 2) {
-                        System.out.println("opcion 1");
-                        //asignacion datos a la clase GameBase
+                    while (option == 1) {
+                        System.out.println("Añadiendo nuevo Juego");
+                        //object type designation
+                        int type = ScannerUtil.captureNumber("Ingrese el tipo de juego a Agregar \n1 Digital\n2 Fisico\nOption");
+                        if (type == 1) {
+                            game = new DigitalGame();
+                        } else if (type == 2) {
+                            game = new PhysicalGame();
+                        }
+                        //base game data
                         String title = ScannerUtil.captureText("ingrese el titulo");
 
                         Genre genre = ScannerUtil.captureEnum("Ingrese el genero:", Genre.class);
@@ -39,31 +46,54 @@ public class Main {
                         double rating = ScannerUtil.captureDecimal("califique el juego");
 
                         double hoursPlayed = ScannerUtil.captureDecimal("ingrese la cantidad de horas jugadas");
+                        boolean valid = GameBase.validation(title, Set.of(genre), Set.of(platform), developer, status, releaseYear, hoursPlayed, rating);
 
-                        GameBase gm = new DigitalGame(
-                                title,
-                                Set.of(genre),
-                                Set.of(platform),
-                                developer,
-                                status,
-                                releaseYear,
-                                hoursPlayed,
-                                rating,
-                                "Steam"
-                        );
-                        if (gm.isValid()) {
-                            gmst.addGame(gm);
-                            System.out.println("Juego agregado");
+                        //gametype date capture
+
+                        if (type == 1 && valid) {
+
+                            Store store = ScannerUtil.captureEnum("Ingrese la Tienda:", Store.class);
+
+                            game = new DigitalGame(
+                                    title,
+                                    Set.of(genre),
+                                    Set.of(platform),
+                                    developer,
+                                    status,
+                                    releaseYear,
+                                    hoursPlayed,
+                                    rating,
+                                    Set.of(store)
+                            );
+                            gmst.addGame(game);
+                            System.out.println("Juego agregado correctamente");
+                        } else if (type == 2 && valid) {
+
+                            GameCondition gcn = ScannerUtil.captureEnum("Ingrese la Condicon del Juego:", GameCondition.class);
+
+                            game = new PhysicalGame(
+                                    title,
+                                    Set.of(genre),
+                                    Set.of(platform),
+                                    developer,
+                                    status,
+                                    releaseYear,
+                                    hoursPlayed,
+                                    rating,
+                                    Set.of(gcn)
+                            );
+                            gmst.addGame(game);
+                            System.out.println("Juego agregado correctamente");
                         } else {
-                            System.out.println("Datos no validos, no se guardo el juego");
+                            System.out.println("Error, datos incorrectos, juego no valido");
                         }
                         option = ScannerUtil.menuAdd();
                     }
                     break;
                 case 2:
                     option = 1;
-                    while (option != 2 && option != 0) {
-                        System.out.println("opcion 2 mostrar lista");
+                    while (option == 1) {
+                        System.out.println("Mostrando Lista de Juegos");
                         gmst.showGames();
                         option = ScannerUtil.menuList();
                     }
@@ -72,7 +102,7 @@ public class Main {
                 case 3:
                     System.out.println("opcion 3 mostrar lista por id");
                     option = 1;
-                    while (option != 2) {
+                    while (option == 1) {
                         gmst.searchById(ScannerUtil.captureNumber("ingrese el Id del Juego"));
                         option = ScannerUtil.menuById();
                     }
@@ -85,21 +115,20 @@ public class Main {
                 case 5:
                     System.out.println("opcion 5 eliminar videojuego");
                     option = 1;
-                    while (option != 2) {
-                        String title = ScannerUtil.captureText("ingrese el titulo del juego a eliminar");
-                        gmst.deleteGame(title);
+                    while (option == 1) {
+                        int idDelet = ScannerUtil.captureNumber("ingrese el Id del juego a eliminar");
+                        System.out.println("Game Title: " + gmst.showTitle(idDelet));
+                        gmst.deleteGame(idDelet);
                         option = ScannerUtil.menuDelete();
                     }
                     break;
                 case 6:
-                    int ans;
+                    int ansSFS;
 
                     while (true) {
 
-                        ans = ScannerUtil.ser_fil_sor_Menu();
-
-                        switch (ans) {
-
+                        ansSFS = ScannerUtil.ser_fil_sor_Menu();
+                        switch (ansSFS) {
                             case 1: // SEARCH
                                 while (true) {
 
@@ -127,7 +156,7 @@ public class Main {
 
                                         case 1:
                                             try {
-                                                Genre genre = ScannerUtil.captureEnum("Ingrese el genero",Genre.class);
+                                                Genre genre = ScannerUtil.captureEnum("Ingrese el genero", Genre.class);
                                                 gmst.filterOptionGenre(genre);
                                             } catch (IllegalArgumentException e) {
                                                 System.out.println("Genero no valido");
@@ -190,29 +219,29 @@ public class Main {
                             default:
                                 System.out.println("Opcion no valida");
                         }
-                        if (ans == 4) {
+                        if (ansSFS == 4) {
                             break;
                         }
                     }
                     break;
                 case 7:
                     System.out.println("opcion 7 log play sessions");
+                    int ansPs=0;
                     do {
-                        ans=1;
                         try {
-                             id= ScannerUtil.captureNumber("ingrese el Id del Juego");
-                            System.out.println("GameBase Title: "+gmst.showTitle(id));
+                            id = ScannerUtil.captureNumber("ingrese el Id del Juego");
+                            System.out.println("GameBase Title: " + gmst.showTitle(id));
                             double hours = ScannerUtil.captureDecimal("ingrese la cantidad de horas del Juego");
-                                if (hours < 0) {
-                                    throw new IllegalArgumentException();
+                            if (hours < 0) {
+                                throw new IllegalArgumentException();
 
-                                }
+                            }
                             gmst.logPlaySession(id, hours);
-                            ans=ScannerUtil.captureNumber("Desea continuar?\n1-añadir nueva secion\n2-volver al menu\n ");
+                            ansPs = ScannerUtil.captureNumber("Desea continuar?\n1-añadir nueva secion\n2-volver al menu\n ");
                         } catch (IllegalArgumentException e) {
                             System.out.println("La hora ingresada no valida");
                         }
-                    } while (ans==1);
+                    } while (ansPs == 1);
                     break;
                 case 8:
                     System.out.println("opcion 8 view stadistics");
@@ -245,7 +274,7 @@ public class Main {
                 2015,
                 120.5,
                 4.9,
-                "Steam"
+                Set.of(Store.STEAM)
         ));
 
         game.addGame(new DigitalGame(
@@ -257,7 +286,7 @@ public class Main {
                 2023,
                 35.0,
                 4.2,
-                "Steam"
+                Set.of(Store.STEAM)
         ));
 
         game.addGame(new DigitalGame(
@@ -269,7 +298,7 @@ public class Main {
                 2011,
                 250.0,
                 5.0,
-                "Steam"
+                Set.of(Store.STEAM)
         ));
 
         game.addGame(new DigitalGame(
@@ -281,7 +310,7 @@ public class Main {
                 2020,
                 60.0,
                 4.0,
-                "Steam"
+                Set.of(Store.STEAM)
         ));
 
         game.addGame(new DigitalGame(
@@ -293,7 +322,7 @@ public class Main {
                 2005,
                 40.0,
                 4.8,
-                "Steam"
+                Set.of(Store.STEAM)
         ));
     }
 }

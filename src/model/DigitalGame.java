@@ -1,9 +1,9 @@
-package classes;
+package model;
 
 import java.util.Set;
 
 public class  DigitalGame extends GameBase {
-    private String storeName;
+    private Set<Store> stores;
 
     public DigitalGame(String title,
                        Set<Genre> genre,
@@ -13,19 +13,19 @@ public class  DigitalGame extends GameBase {
                        int releaseYear,
                        double hoursPlayed,
                        double rating,
-                       String storeName) {
+                       Set<Store> storeName) {
 
         super(title, genre, platform, developer, status, releaseYear, hoursPlayed, rating);
 
-        this.storeName = storeName;
+        this.stores = storeName;
     }
 
+    public DigitalGame() {
 
-    public String getStoreName() {
-        return storeName;
     }
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
+    public Set<Store> getStoreName() {
+        return stores;
     }
+
 }

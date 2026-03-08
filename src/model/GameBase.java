@@ -1,4 +1,4 @@
-package classes;
+package model;
 
 import java.util.Set;
 
@@ -16,16 +16,8 @@ public  abstract class GameBase {
     protected double hoursPlayed;
 
     protected GameBase(String title, Set<Genre> genre, Set<Platform> platform, String developer, Status status, int releaseYear, double hoursPlayed, double rating){
+
         this.id = contId++;
-
-        if (title == null || title.isBlank()) return;
-        if (developer == null || developer.isBlank()) return;
-        if (genre == null || genre.isEmpty()) return;
-        if (platform == null || platform.isEmpty()) return;
-        if (releaseYear < 1970 || releaseYear > 2026) return;
-        if (rating < 0 || rating > 5) return;
-        if (hoursPlayed < 0) return;
-
         this.title = title;
         this.genre = genre;
         this.platform = platform;
@@ -35,16 +27,21 @@ public  abstract class GameBase {
         this.hoursPlayed = hoursPlayed;
         this.rating = rating;
 
-        validation = true;
-
     }
 
     public GameBase(){
 
     }
 
-    public boolean isValid() {
-        return validation;
+    public static boolean validation(String title, Set<Genre> genre, Set<Platform> platform, String developer, Status status, int releaseYear, double hoursPlayed, double rating) {
+
+        return title != null && !title.isBlank() &&
+                developer != null && !developer.isBlank() &&
+                genre != null && !genre.isEmpty() &&
+                platform != null && !platform.isEmpty() &&
+                releaseYear >= 1970 && releaseYear <= 2026 &&
+                rating >= 0 && rating <= 5 &&
+                hoursPlayed >= 0;
     }
         @Override
         public String toString() {
@@ -74,6 +71,11 @@ public  abstract class GameBase {
         System.out.println("Hours Played: " + hoursPlayed);
         System.out.println("Developer: " + developer);
         System.out.println("Platform: " + platform);
+        if(this instanceof DigitalGame dg){
+            System.out.println("Store: "+dg.getStoreName());
+        }else if(this instanceof PhysicalGame pg){
+            System.out.println("Condition"+pg.getCondition());
+        }
     }
 
     public int getId() {
