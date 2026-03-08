@@ -1,7 +1,7 @@
 package lists;
 
-import classes.*;
-import classes.Platform;
+import model.*;
+import model.Platform;
 import util.ScannerUtil;
 
 import java.time.LocalDateTime;
@@ -48,15 +48,17 @@ public class GameStorage {
         gamesList.forEach(gameBase -> {
             gameBase.showInfo();
             System.out.println("--------------------");
-        });
-    }
+            });
+        }
 
-    public void deleteGame(String title) {
-        boolean removed = gamesList.removeIf(gameBase -> gameBase.getTitle().equalsIgnoreCase(title));
-        if(removed){
-            System.out.println("GameBase has been deleted.");
-        }else {
-            System.out.println("GameBase not found.");
+    public void deleteGame(int id) {
+
+        boolean removed = gamesList.removeIf(gameBase -> gameBase.getId() == id);
+
+        if (removed) {
+            System.out.println("Game deleted.");
+        } else {
+            System.out.println("Game not found.");
         }
     }
 
@@ -140,6 +142,13 @@ public class GameStorage {
                     .filter(gameBase -> gameBase.getTitle() != null && gameBase.getTitle().toLowerCase().contains(text.toLowerCase()) ||
                     gameBase.getDeveloper() != null && gameBase.getDeveloper().toLowerCase().contains(text.toLowerCase()))
                     .forEach(System.out::println);
+            /*.filter(gameBase ->
+        (gameBase.getTitle() != null &&
+        gameBase.getTitle().toLowerCase().contains(text.toLowerCase()))
+        ||
+        (gameBase.getDeveloper() != null &&
+        gameBase.getDeveloper().toLowerCase().contains(text.toLowerCase()))
+)*/
     }
         //metodos para filtrar datos
     public void filterOptionGenre(Genre genre) {

@@ -1,4 +1,4 @@
-package classes;
+package model;
 
 public enum Status {
     IN_LIBRARY,     // Lo tienes pero no instalado

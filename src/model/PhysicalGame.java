@@ -1,9 +1,9 @@
-package classes;
+package model;
 
 import java.util.Set;
 
 public class PhysicalGame extends GameBase {
-    private String condition;
+    private Set<GameCondition> condition;
 
     public PhysicalGame(String title,
                         Set<Genre> genre,
@@ -13,18 +13,17 @@ public class PhysicalGame extends GameBase {
                         int releaseYear,
                         double hoursPlayed,
                         double rating,
-                        String condition) {
+                        Set<GameCondition> condition) {
 
         super(title, genre, platform, developer, status, releaseYear, hoursPlayed, rating);
 
         this.condition = condition;
     }
-
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public PhysicalGame(){
 
     }
-    public String getCondition() {
+
+    public Set<GameCondition> getCondition() {
         return condition;
     }
 
