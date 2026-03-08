@@ -1,22 +1,21 @@
 package classes;
 
-import java.util.Collections;
 import java.util.Set;
 
-public class Game {
-    private static int contId = 1;
-    private boolean validation;
-    private int id;
-    private String title;
-    private Set<Genre> genre;
-    private Set<Platform> platform;
-    private String developer;
-    private Status status;
-    private int releaseYear;
-    private double rating;
-    private double hoursPlayed;
+public  abstract class GameBase {
+    protected static int contId = 1;
+    protected boolean validation;
+    protected int id;
+    protected String title;
+    protected Set<Genre> genre;
+    protected Set<Platform> platform;
+    protected String developer;
+    protected Status status;
+    protected int releaseYear;
+    protected double rating;
+    protected double hoursPlayed;
 
-    public Game(String title, Set<Genre> genre, Set<Platform> platform,String developer, Status status, int releaseYear, double hoursPlayed, double rating){
+    protected GameBase(String title, Set<Genre> genre, Set<Platform> platform, String developer, Status status, int releaseYear, double hoursPlayed, double rating){
         this.id = contId++;
 
         if (title == null || title.isBlank()) return;
@@ -40,7 +39,7 @@ public class Game {
 
     }
 
-    public Game(){
+    public GameBase(){
 
     }
 
@@ -49,6 +48,12 @@ public class Game {
     }
         @Override
         public String toString() {
+            String extra ="";
+            if(this instanceof DigitalGame dg){
+                extra = "Store: "+dg.getStoreName();
+            }else if(this instanceof PhysicalGame pg){
+                extra= "Condition"+pg.getCondition();
+            }
         return "ID: "+id+
                 " | Title: " + title +
                 " | Developer: " + developer +
@@ -56,7 +61,7 @@ public class Game {
                 " | Platform: " + platform +
                 " | Year: " + releaseYear +
                 " | Rating: " + rating +
-                " | Hours Played: " + hoursPlayed;
+                " | Hours Played: " + hoursPlayed+" "+ extra;
         }
 
     public void showInfo(){
@@ -67,6 +72,8 @@ public class Game {
         System.out.println("RealeseYear: " + releaseYear);
         System.out.println("Rating: " + rating);
         System.out.println("Hours Played: " + hoursPlayed);
+        System.out.println("Developer: " + developer);
+        System.out.println("Platform: " + platform);
     }
 
     public int getId() {

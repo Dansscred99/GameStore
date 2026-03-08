@@ -9,11 +9,11 @@ public class ScannerUtil {
         System.out.println("\n╔══════════════════════════════════════╗");
         System.out.println("║     VIDEO GAME MANAGEMENT SYSTEM     ║");
         System.out.println("╠══════════════════════════════════════╣");
-        System.out.println("║ 1. Add Video Game                    ║");
+        System.out.println("║ 1. Add Video GameBase                ║");
         System.out.println("║ 2. List Video Games                  ║");
         System.out.println("║ 3. View Details by ID                ║");
-        System.out.println("║ 4. Edit Video Game                   ║");
-        System.out.println("║ 5. Delete Video Game                 ║");
+        System.out.println("║ 4. Edit Video GameBase               ║");
+        System.out.println("║ 5. Delete Video GameBase             ║");
         System.out.println("╠══════════════════════════════════════╣");
         System.out.println("║ 6. Search / Filter / Sort            ║");
         System.out.println("║ 7. Log Play Session                  ║");
