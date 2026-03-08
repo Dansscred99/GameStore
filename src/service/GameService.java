@@ -1,59 +1,31 @@
-package lists;
+package service;
 
-import model.*;
+import model.GameBase;
+import model.Genre;
 import model.Platform;
+import model.Status;
+import repository.GameRepository;
 import util.ScannerUtil;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class GameStorage {
-    private List<GameBase> gamesList;
-    private List<PlaySession> sessions;
+public class GameService {
+    private final GameRepository gameRepository;
 
-    public GameStorage() {
-        this.gamesList = new ArrayList<>();
-        this.sessions = new ArrayList<>();
-    }
-    //guardar las sesiones en una lista
-    public void logPlaySession(int gameId, double hours) {
-    GameBase gameBase = this.gamesList.stream().filter(g -> g.getId() == gameId).
-            findFirst().
-            orElse(null);
-        if (gameBase == null) {
-            System.out.println("GameBase with id " + gameId + " not found");
-            return;
-        }
-        PlaySession session1 = new PlaySession(
-                gameId,
-                hours,
-                LocalDateTime.now()
-        );
-        sessions.add(session1);
-        gameBase.setHoursPlayed(gameBase.getHoursPlayed() + hours);
-        System.out.println();
-        System.out.println("Session logged"+"\nGameBase Id : " + gameBase.getId()
-                        +"\nTitle: "+ gameBase.getTitle()
-                        +" \nHours played: "+ gameBase.getHoursPlayed());
-
-    }
-    //basic crud
-    public void addGame(GameBase gameBase) {
-        this.gamesList.add(gameBase);
+    public GameService(GameRepository repo) {
+        this.gameRepository = repo;
     }
 
-
-    public void showGames() {
-        gamesList.forEach(gameBase -> {
-            gameBase.showInfo();
-            System.out.println("--------------------");
-            });
-        }
-
+    public  void addGame(GameBase gameBase) {
+        gameRepository.save(gameBase);
+    }
     public void deleteGame(int id) {
 
-        boolean removed = gamesList.removeIf(gameBase -> gameBase.getId() == id);
+        boolean removed = gameRepository.findById(id).isEmpty();
 
         if (removed) {
             System.out.println("Game deleted.");
@@ -62,14 +34,78 @@ public class GameStorage {
         }
     }
 
-    public void searchById(int id) {
-         gamesList.stream()
-                .filter(gameBase -> gameBase.getId() == id).findFirst().ifPresentOrElse(
-                         GameBase::showInfo,
-                        () -> System.out.println("GameBase not found.")
-                 );
+    public void showGames() {
+        gameRepository.findAll().forEach(gameBase -> {
+            gameBase.showInfo();
+            System.out.println("--------------------");
+        });
+    }
+    public String showTitle(int id){
+        return  gameRepository.findAll().stream().filter(gameBase -> gameBase.getId() == id).
+                map(GameBase::getTitle).findFirst().orElse("game not found");
 
     }
+    public void searchById(int id) {
+        gameRepository.findById(id).stream()
+                .filter(gameBase -> gameBase.getId() == id).findFirst().ifPresentOrElse(
+                        GameBase::showInfo,
+                        () -> System.out.println("GameBase not found.")
+                );
+        /* gameRepository.findById(id)
+            .ifPresentOrElse(
+                    GameBase::showInfo,
+                    () -> System.out.println("Game not found.")
+            );*/
+
+    }
+    //metodo que permite buscar por titulo o developer
+    public void searchOptions( String text) {
+        gameRepository.findAll().stream()
+                .filter(gameBase -> gameBase.getTitle() != null && gameBase.getTitle().toLowerCase().contains(text.toLowerCase()) ||
+                        gameBase.getDeveloper() != null && gameBase.getDeveloper().toLowerCase().contains(text.toLowerCase()))
+                .forEach(System.out::println);
+            /*.filter(gameBase ->
+        (gameBase.getTitle() != null &&
+        gameBase.getTitle().toLowerCase().contains(text.toLowerCase()))
+        ||
+        (gameBase.getDeveloper() != null &&
+        gameBase.getDeveloper().toLowerCase().contains(text.toLowerCase()))
+)*/
+    }
+    //metodos para filtrar datos
+    public void filterOptionGenre(Genre genre) {
+        gameRepository.findAll().stream()
+                .filter(gameBase -> gameBase.getGenre() != null && gameBase.getGenre().contains(genre))
+                .forEach(System.out::println);
+    }
+    public void filterOptionPlatfom(Platform platform) {
+        gameRepository.findAll().stream()
+                .filter(gameBase -> gameBase.getPlatform() != null && gameBase.getPlatform().contains(platform))
+                .forEach(System.out::println);
+    }
+    public void filterOptionStatus(Status status) {
+        gameRepository.findAll().stream()
+                .filter(gameBase -> gameBase.getStatus() != null && gameBase.getStatus() == status)
+                .forEach(System.out::println);
+    }
+    //metodos para sortear los datos.
+    public void sortOptionReleaseYear( ) {
+        gameRepository.findAll().stream()
+                .sorted((g1, g2) -> Integer.compare(g1.getReleaseYear(), g2.getReleaseYear()))
+                .forEach(System.out::println);
+    }
+    public void sortOptionTitle( ) {
+        gameRepository.findAll().stream()
+                .sorted((g1, g2) -> g1.getTitle().compareToIgnoreCase(g2.getTitle()))
+                .forEach(System.out::println);
+    }
+
+    public void sortOptionRating( ) {
+        gameRepository.findAll().stream()
+                .sorted((g1, g2) -> Double.compare(g2.getRating(), g1.getRating()))
+                .forEach(System.out::println);
+    }
+
     //estadisticas con mapas
     public void top5mostPlayedGames() {
         System.out.println("\n----- TOP 5 MOST PLAYED GAMES -----");
@@ -77,7 +113,7 @@ public class GameStorage {
         System.out.printf("%-25s %10s%n", "GameBase", "Hours");
         System.out.println("-------------------------------------------");
 
-        gamesList.stream()
+        gameRepository.findAll().stream()
                 .sorted(Comparator.comparingDouble(GameBase::getHoursPlayed).reversed())
                 .limit(5)
                 .forEach(gameBase ->
@@ -88,7 +124,7 @@ public class GameStorage {
     }
     public void countbyPlatform() {
         Map<Platform, Long> cantPl=
-                gamesList.stream().flatMap(gameBase -> gameBase.getPlatform().stream())
+                gameRepository.findAll().stream().flatMap(gameBase -> gameBase.getPlatform().stream())
                         .collect(Collectors.groupingBy(platform -> platform,
                                 Collectors.counting()));
         System.out.println("\n----- GAMES BY PLATFORM -----");
@@ -102,7 +138,7 @@ public class GameStorage {
 
     public void countbyGenre() {
         Map<Genre,Long> cantGen=
-                gamesList.stream().flatMap(gameBase -> gameBase.getGenre().stream())
+                gameRepository.findAll().stream().flatMap(gameBase -> gameBase.getGenre().stream())
                         .collect(Collectors.groupingBy(genre -> genre,
                                 Collectors.counting()));
         System.out.println("\n----- GAMES BY GENRE -----");
@@ -115,7 +151,7 @@ public class GameStorage {
     }
     public void totalHoursPlayed() {
         double totalHoursPlayed = 0;
-        totalHoursPlayed=gamesList.stream().mapToDouble(GameBase::getHoursPlayed).sum();
+        totalHoursPlayed=gameRepository.findAll().stream().mapToDouble(GameBase::getHoursPlayed).sum();
         System.out.println("\n----- TOTAL HOURS PLAYED -----");
 
         System.out.printf("Total hours played: %.2f%n", totalHoursPlayed);
@@ -134,64 +170,10 @@ public class GameStorage {
 
         System.out.println("==================================\n");
     }
-
-    //opcion 7 toString
-    //metodo que permite buscar por titulo o developer
-    public void searchOptions( String text) {
-            gamesList.stream()
-                    .filter(gameBase -> gameBase.getTitle() != null && gameBase.getTitle().toLowerCase().contains(text.toLowerCase()) ||
-                    gameBase.getDeveloper() != null && gameBase.getDeveloper().toLowerCase().contains(text.toLowerCase()))
-                    .forEach(System.out::println);
-            /*.filter(gameBase ->
-        (gameBase.getTitle() != null &&
-        gameBase.getTitle().toLowerCase().contains(text.toLowerCase()))
-        ||
-        (gameBase.getDeveloper() != null &&
-        gameBase.getDeveloper().toLowerCase().contains(text.toLowerCase()))
-)*/
-    }
-        //metodos para filtrar datos
-    public void filterOptionGenre(Genre genre) {
-        gamesList.stream()
-                .filter(gameBase -> gameBase.getGenre() != null && gameBase.getGenre().contains(genre))
-                .forEach(System.out::println);
-    }
-    public void filterOptionPlatfom(Platform platform) {
-        gamesList.stream()
-                .filter(gameBase -> gameBase.getPlatform() != null && gameBase.getPlatform().contains(platform))
-                .forEach(System.out::println);
-    }
-    public void filterOptionStatus(Status status) {
-        gamesList.stream()
-                .filter(gameBase -> gameBase.getStatus() != null && gameBase.getStatus() == status)
-                .forEach(System.out::println);
-    }
-    //metodos para sortear los datos.
-    public void sortOptionReleaseYear( ) {
-        gamesList.stream()
-                .sorted((g1, g2) -> Integer.compare(g1.getReleaseYear(), g2.getReleaseYear()))
-                .forEach(System.out::println);
-    }
-    public void sortOptionTitle( ) {
-            gamesList.stream()
-                    .sorted((g1, g2) -> g1.getTitle().compareToIgnoreCase(g2.getTitle()))
-                    .forEach(System.out::println);
-    }
-
-    public void sortOptionRating( ) {
-            gamesList.stream()
-                    .sorted((g1, g2) -> Double.compare(g2.getRating(), g1.getRating()))
-                    .forEach(System.out::println);
-    }
-
-    public String showTitle(int id){
-       return  gamesList.stream().filter(gameBase -> gameBase.getId() == id).
-                map(GameBase::getTitle).findFirst().orElse("game not found");
-
-    }
+    //edit
     public void editGame(int id) {
 
-        Optional<GameBase> gameOpt = gamesList.stream()
+        Optional<GameBase> gameOpt = gameRepository.findById(id).stream()
                 .filter(g -> g.getId() == id)
                 .findFirst();
         gameOpt.ifPresentOrElse(gameBase -> {
@@ -252,10 +234,4 @@ public class GameStorage {
         }, () -> System.out.println("GameBase not found."));
     }
 
-    public List<GameBase> getGamesList() {
-        return gamesList;
-    }
-    public List<PlaySession> getSession() {
-        return sessions;
-    }
 }

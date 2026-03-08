@@ -1,5 +1,10 @@
 import model.*;
-import lists.GameStorage;
+import repository.GameRepository;
+import repository.InMemoryGameRepository;
+import repository.InMemorySessionRepository;
+import repository.SessionRepository;
+import service.GameService;
+import service.SessionService;
 import util.ScannerUtil;
 
 import java.util.Set;
@@ -10,9 +15,13 @@ public class Main {
         //variable para el switch y la inizializacion de los objetos
         int option = 0;
         GameBase game = null;
-        GameStorage gmst = new GameStorage();
-        cargarGame(gmst);
+        GameRepository gameRepository = new InMemoryGameRepository();
+        SessionRepository sessionRepository = new InMemorySessionRepository();
 
+        GameService gameService = new GameService(gameRepository);
+        SessionService sessionService = new SessionService(sessionRepository, gameRepository);
+
+        cargarGame(gameService);
         //siclo controlado por el usuario.
         do {
             //lectura de la oppcion
@@ -65,7 +74,7 @@ public class Main {
                                     rating,
                                     Set.of(store)
                             );
-                            gmst.addGame(game);
+                            gameService.addGame(game);
                             System.out.println("Juego agregado correctamente");
                         } else if (type == 2 && valid) {
 
@@ -82,7 +91,7 @@ public class Main {
                                     rating,
                                     Set.of(gcn)
                             );
-                            gmst.addGame(game);
+                            gameService.addGame(game);
                             System.out.println("Juego agregado correctamente");
                         } else {
                             System.out.println("Error, datos incorrectos, juego no valido");
@@ -94,7 +103,7 @@ public class Main {
                     option = 1;
                     while (option == 1) {
                         System.out.println("Mostrando Lista de Juegos");
-                        gmst.showGames();
+                        gameService.showGames();
                         option = ScannerUtil.menuList();
                     }
 
@@ -103,22 +112,22 @@ public class Main {
                     System.out.println("opcion 3 mostrar lista por id");
                     option = 1;
                     while (option == 1) {
-                        gmst.searchById(ScannerUtil.captureNumber("ingrese el Id del Juego"));
+                        gameService.searchById(ScannerUtil.captureNumber("ingrese el Id del Juego"));
                         option = ScannerUtil.menuById();
                     }
                     break;
                 case 4:
                     System.out.println("opcion 4 editar videojuego");
                     int id = ScannerUtil.captureNumber("Enter gameBase ID to edit");
-                    gmst.editGame(id);
+                    gameService.editGame(id);
                     break;
                 case 5:
                     System.out.println("opcion 5 eliminar videojuego");
                     option = 1;
                     while (option == 1) {
                         int idDelet = ScannerUtil.captureNumber("ingrese el Id del juego a eliminar");
-                        System.out.println("Game Title: " + gmst.showTitle(idDelet));
-                        gmst.deleteGame(idDelet);
+                        System.out.println("Game Title: " + gameService.showTitle(idDelet));
+                        gameService.deleteGame(idDelet);
                         option = ScannerUtil.menuDelete();
                     }
                     break;
@@ -133,7 +142,7 @@ public class Main {
                                 while (true) {
 
                                     String text = ScannerUtil.captureText("Ingrese el titulo del juego o el developer");
-                                    gmst.searchOptions(text);
+                                    gameService.searchOptions(text);
 
                                     int searchOption = ScannerUtil.searchMenu();
 
@@ -157,7 +166,7 @@ public class Main {
                                         case 1:
                                             try {
                                                 Genre genre = ScannerUtil.captureEnum("Ingrese el genero", Genre.class);
-                                                gmst.filterOptionGenre(genre);
+                                                gameService.filterOptionGenre(genre);
                                             } catch (IllegalArgumentException e) {
                                                 System.out.println("Genero no valido");
                                             }
@@ -166,7 +175,7 @@ public class Main {
                                         case 2:
                                             try {
                                                 Platform platform = ScannerUtil.captureEnum("Ingrese la plataforma", Platform.class);
-                                                gmst.filterOptionPlatfom(platform);
+                                                gameService.filterOptionPlatfom(platform);
                                             } catch (IllegalArgumentException e) {
                                                 System.out.println("Plataforma no valida");
                                             }
@@ -175,7 +184,7 @@ public class Main {
                                         case 3:
                                             try {
                                                 Status status = ScannerUtil.captureEnum("Ingrese el status", Status.class);
-                                                gmst.filterOptionStatus(status);
+                                                gameService.filterOptionStatus(status);
                                             } catch (IllegalArgumentException e) {
                                                 System.out.println("Status no valido");
                                             }
@@ -198,15 +207,15 @@ public class Main {
                                     switch (sortOption) {
 
                                         case 1:
-                                            gmst.sortOptionReleaseYear();
+                                            gameService.sortOptionReleaseYear();
                                             break;
 
                                         case 2:
-                                            gmst.sortOptionTitle();
+                                            gameService.sortOptionTitle();
                                             break;
 
                                         case 3:
-                                            gmst.sortOptionRating();
+                                            gameService.sortOptionRating();
                                             break;
 
                                         default:
@@ -230,13 +239,13 @@ public class Main {
                     do {
                         try {
                             id = ScannerUtil.captureNumber("ingrese el Id del Juego");
-                            System.out.println("GameBase Title: " + gmst.showTitle(id));
+                            System.out.println("GameBase Title: " + gameService.showTitle(id));
                             double hours = ScannerUtil.captureDecimal("ingrese la cantidad de horas del Juego");
                             if (hours < 0) {
                                 throw new IllegalArgumentException();
 
                             }
-                            gmst.logPlaySession(id, hours);
+                            sessionService.logPlaySession(id, hours);
                             ansPs = ScannerUtil.captureNumber("Desea continuar?\n1-añadir nueva secion\n2-volver al menu\n ");
                         } catch (IllegalArgumentException e) {
                             System.out.println("La hora ingresada no valida");
@@ -245,7 +254,7 @@ public class Main {
                     break;
                 case 8:
                     System.out.println("opcion 8 view stadistics");
-                    gmst.showStatistics();
+                    gameService.showStatistics();
 
 
                     break;
@@ -263,9 +272,9 @@ public class Main {
 
 
         }
-    public static void cargarGame (GameStorage game){
+    public static void cargarGame (GameService gameService){
 
-        game.addGame(new DigitalGame(
+        gameService.addGame(new DigitalGame(
                 "The Witcher 3",
                 Set.of(Genre.RPG, Genre.ADVENTURE),
                 Set.of(Platform.PC),
@@ -277,7 +286,7 @@ public class Main {
                 Set.of(Store.STEAM)
         ));
 
-        game.addGame(new DigitalGame(
+        gameService.addGame(new DigitalGame(
                 "FIFA 24",
                 Set.of(Genre.SPORTS),
                 Set.of(Platform.PLAYSTATION),
@@ -289,7 +298,7 @@ public class Main {
                 Set.of(Store.STEAM)
         ));
 
-        game.addGame(new DigitalGame(
+        gameService.addGame(new DigitalGame(
                 "Minecraft",
                 Set.of(Genre.SIMULATION),
                 Set.of(Platform.PC),
@@ -301,7 +310,7 @@ public class Main {
                 Set.of(Store.STEAM)
         ));
 
-        game.addGame(new DigitalGame(
+        gameService.addGame(new DigitalGame(
                 "Cyberpunk 2077",
                 Set.of(Genre.RPG),
                 Set.of(Platform.PC),
@@ -313,7 +322,7 @@ public class Main {
                 Set.of(Store.STEAM)
         ));
 
-        game.addGame(new DigitalGame(
+        gameService.addGame(new DigitalGame(
                 "Resident Evil 4",
                 Set.of(Genre.HORROR),
                 Set.of(Platform.PLAYSTATION),

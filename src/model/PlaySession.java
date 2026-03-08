@@ -1,6 +1,5 @@
-package lists;
+package model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record PlaySession(int gameId,
