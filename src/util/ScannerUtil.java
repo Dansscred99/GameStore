@@ -191,24 +191,28 @@ public class ScannerUtil {
 
     }
     public static <T extends Enum<T>> T captureEnum(String message, Class<T> enumType) {
-
         while (true) {
+
             try {
 
                 System.out.println(message);
 
-                for (T value : enumType.getEnumConstants()) {
-                    System.out.println("- " + value);
+                T[] values = enumType.getEnumConstants();
+
+                for (int i = 0; i < values.length; i++) {
+                    System.out.println((i + 1) + " - " + values[i]);
                 }
 
-                String input = captureText("R// ");
+                int option = captureNumber("Enter the option number");
 
-                return Enum.valueOf(enumType, input.toUpperCase());
+                if (option >= 1 && option <= values.length) {
+                    return values[option - 1];
+                }
 
-            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid option. Try again.\n");
 
-                System.out.println("Valor invalido. Intente nuevamente.\n");
-
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.\n");
             }
         }
     }

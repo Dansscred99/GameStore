@@ -113,10 +113,9 @@ public class Main {
 
                                     int searchOption = ScannerUtil.searchMenu();
 
-                                    if (searchOption == 2) {
+                                    if (searchOption != 1) {
                                         break; // volver al menu anterior
                                     }
-
                                 }
                                 break;
 
