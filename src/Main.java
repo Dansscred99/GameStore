@@ -1,26 +1,20 @@
-import classes.Game;
-import classes.Genre;
-import classes.Platform;
-import classes.Status;
+import classes.*;
 import lists.GameStorage;
 import util.ScannerUtil;
 
-import java.util.List;
 import java.util.Set;
 
 public class Main {
-
+    //toString;
     public static void main(String[] args) {
         //variable para el switch y la inizializacion de los objetos
         int option = 0;
 
-        Game game = new Game();
         GameStorage gmst = new GameStorage();
         cargarGame(gmst);
 
         //siclo controlado por el usuario.
         do {
-            Game Gm = new Game();
             //lectura de la oppcion
             option = ScannerUtil.captureMenu();
             switch (option) {
@@ -29,7 +23,7 @@ public class Main {
                     //se puede añadir juegos hasta que el usuario salga al menu
                     while (option != 2) {
                         System.out.println("opcion 1");
-                        //asignacion datos a la clase Game
+                        //asignacion datos a la clase GameBase
                         String title = ScannerUtil.captureText("ingrese el titulo");
 
                         Genre genre = ScannerUtil.captureEnum("Ingrese el genero:", Genre.class);
@@ -46,7 +40,7 @@ public class Main {
 
                         double hoursPlayed = ScannerUtil.captureDecimal("ingrese la cantidad de horas jugadas");
 
-                        Game gm = new Game(
+                        GameBase gm = new DigitalGame(
                                 title,
                                 Set.of(genre),
                                 Set.of(platform),
@@ -54,7 +48,8 @@ public class Main {
                                 status,
                                 releaseYear,
                                 hoursPlayed,
-                                rating
+                                rating,
+                                "Steam"
                         );
                         if (gm.isValid()) {
                             gmst.addGame(gm);
@@ -84,7 +79,7 @@ public class Main {
                     break;
                 case 4:
                     System.out.println("opcion 4 editar videojuego");
-                    int id = ScannerUtil.captureNumber("Enter game ID to edit");
+                    int id = ScannerUtil.captureNumber("Enter gameBase ID to edit");
                     gmst.editGame(id);
                     break;
                 case 5:
@@ -113,10 +108,9 @@ public class Main {
 
                                     int searchOption = ScannerUtil.searchMenu();
 
-                                    if (searchOption == 2) {
+                                    if (searchOption != 1) {
                                         break; // volver al menu anterior
                                     }
-
                                 }
                                 break;
 
@@ -207,7 +201,7 @@ public class Main {
                         ans=1;
                         try {
                              id= ScannerUtil.captureNumber("ingrese el Id del Juego");
-                            System.out.println("Game Title: "+gmst.showTitle(id));
+                            System.out.println("GameBase Title: "+gmst.showTitle(id));
                             double hours = ScannerUtil.captureDecimal("ingrese la cantidad de horas del Juego");
                                 if (hours < 0) {
                                     throw new IllegalArgumentException();
@@ -242,7 +236,7 @@ public class Main {
         }
     public static void cargarGame (GameStorage game){
 
-        game.addGame(new Game(
+        game.addGame(new DigitalGame(
                 "The Witcher 3",
                 Set.of(Genre.RPG, Genre.ADVENTURE),
                 Set.of(Platform.PC),
@@ -250,10 +244,11 @@ public class Main {
                 Status.COMPLETED,
                 2015,
                 120.5,
-                4.9
+                4.9,
+                "Steam"
         ));
 
-        game.addGame(new Game(
+        game.addGame(new DigitalGame(
                 "FIFA 24",
                 Set.of(Genre.SPORTS),
                 Set.of(Platform.PLAYSTATION),
@@ -261,10 +256,11 @@ public class Main {
                 Status.PLAYING,
                 2023,
                 35.0,
-                4.2
+                4.2,
+                "Steam"
         ));
 
-        game.addGame(new Game(
+        game.addGame(new DigitalGame(
                 "Minecraft",
                 Set.of(Genre.SIMULATION),
                 Set.of(Platform.PC),
@@ -272,10 +268,11 @@ public class Main {
                 Status.IN_LIBRARY,
                 2011,
                 250.0,
-                5.0
+                5.0,
+                "Steam"
         ));
 
-        game.addGame(new Game(
+        game.addGame(new DigitalGame(
                 "Cyberpunk 2077",
                 Set.of(Genre.RPG),
                 Set.of(Platform.PC),
@@ -283,10 +280,11 @@ public class Main {
                 Status.DOWNLOADED,
                 2020,
                 60.0,
-                4.0
+                4.0,
+                "Steam"
         ));
 
-        game.addGame(new Game(
+        game.addGame(new DigitalGame(
                 "Resident Evil 4",
                 Set.of(Genre.HORROR),
                 Set.of(Platform.PLAYSTATION),
@@ -294,7 +292,8 @@ public class Main {
                 Status.COMPLETED,
                 2005,
                 40.0,
-                4.8
+                4.8,
+                "Steam"
         ));
     }
 }
